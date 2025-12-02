@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MediQuery - FDA Drug Assistant</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
+        #query { width: 100%; padding: 10px; font-size: 16px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 20px; padding: 20px; background: #f5f5f5; border-radius: 5px; white-space: pre-wrap; }
+        .loading { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>🏥 MediQuery</h1>
+    <p>Ask questions about FDA drug information</p>
+    
+    <input type="text" id="query" placeholder="e.g., What are side effects of Adderall?" />
+    <button onclick="askQuestion()">Search</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        async function askQuestion() {
+            const query = document.getElementById('query').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!query) return;
+            
+            resultDiv.innerHTML = '<p class="loading">Searching FDA documents...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8000/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: query })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Answer:</strong>\n\n${data.answer}\n\n<em>Response time: ${data.latency_ms.toFixed(0)}ms</em>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+        
+        document.getElementById('query').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') askQuestion();
+        });
+    </script>
+</body>
+</html>
