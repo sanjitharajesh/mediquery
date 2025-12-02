@@ -1,0 +1,84 @@
+# ---------------------------
+# Python
+# ---------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.so
+
+# Virtual environments
+mynev/
+.venv/
+venv/
+ENV/
+env/
+
+# PyInstaller
+*.spec
+dist/
+build/
+
+# Logs
+*.log
+
+# ---------------------------
+# FastAPI / Uvicorn
+# ---------------------------
+*.db
+*.sqlite3
+
+# ---------------------------
+# SQLite / Local DBs
+# ---------------------------
+*.sqlite
+*.sqlite3
+*.db
+
+# ---------------------------
+# ChromaDB
+# ---------------------------
+chroma_db/
+chroma/
+index/
+*.parquet
+*.feather
+
+# ---------------------------
+# Environment variables
+# ---------------------------
+.env
+.env.*
+!env.example
+!.env.example
+
+# ---------------------------
+# VSCode
+# ---------------------------
+.vscode/
+*.code-workspace
+
+# ---------------------------
+# macOS system files
+# ---------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ---------------------------
+# Node / Frontend (if any)
+# ---------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---------------------------
+# Docker
+# ---------------------------
+**/docker-data/
+**/docker-volume/
