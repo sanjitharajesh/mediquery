@@ -1,5 +1,5 @@
-A local, privacy-preserving medical assistant that answers drug-related questions using RAG with Mistral-7B, Instructor embeddings, and ChromaDB.
-Built with FastAPI, SQLite, and Docker, MediQuery retrieves FDA medication guides, processes them locally, and returns accurate, explainable responses with no external API calls.
-Includes full logging (queries, processing time, source count) and a clean pipeline for ingestion, retrieval, and generation.
-Lightweight, fast, and fully offline.
+MediQuery is a local, privacy-preserving medical document assistant that answers drug-related questions using a hybrid RAG (Retrieval-Augmented Generation) pipeline built on BM25 + ChromaDB vector search with Instructor embeddings and a Mistral-7B-Instruct language model. The system ingests FDA medication guides, chunks and embeds them, and retrieves the most relevant passages to generate grounded, explainable answers.
 
+Built with FastAPI, SQLite, and Docker, MediQuery includes full request-level logging (query text, retrieval count, and processing time) and a modular pipeline for document ingestion, retrieval, and generation, making it easy to evaluate and iterate on extraction quality and system performance.
+
+The project is designed to run entirely locally on CPU, prioritizing privacy and reproducibility over raw throughput. As a result, the reported latency and retrieval metrics reflect real-world constraints of offline LLM deployment, providing a realistic benchmark for accuracy-vs-performance trade-offs in regulated environments such as healthcare and legal document processing.
