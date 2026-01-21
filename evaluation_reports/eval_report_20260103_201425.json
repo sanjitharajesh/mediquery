@@ -1,0 +1,166 @@
+{
+  "timestamp": "20260103_201425",
+  "total_queries": 7,
+  "successful": 5,
+  "results": [
+    {
+      "question": "What are the side effects of Adderall?",
+      "category": "side_effects",
+      "latency_ms": 29121.99,
+      "answer_length": 1231,
+      "keyword_coverage": 0.25,
+      "keywords_found": [
+        "growth"
+      ],
+      "keywords_missing": [
+        "cardiovascular",
+        "psychiatric",
+        "appetite"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": false,
+      "is_too_short": false,
+      "is_error": false,
+      "success": false,
+      "answer_preview": "The side effects of Adderall, as mentioned in Source 1 on page 15, can be serious and may require medical attention or discontinuation of treatment by a healthcare provider. These potential adverse re..."
+    },
+    {
+      "question": "Can pregnant women take Accutane?",
+      "category": "pregnancy",
+      "latency_ms": 15991.7,
+      "answer_length": 671,
+      "keyword_coverage": 0.75,
+      "keywords_found": [
+        "contraindicated",
+        "pregnancy",
+        "birth defects"
+      ],
+      "keywords_missing": [
+        "category x"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "Accutane is contraindicated for use in pregnant women due to its potential teratogenicity, which can result in birth defects (see Boxed CONTRAINDICATIONS AND WARNINGS). Women of childbearing age who a..."
+    },
+    {
+      "question": "What is Lipitor used for?",
+      "category": "indications",
+      "latency_ms": 24735.06,
+      "answer_length": 1052,
+      "keyword_coverage": 0.5,
+      "keywords_found": [
+        "cholesterol",
+        "statin"
+      ],
+      "keywords_missing": [
+        "cardiovascular",
+        "ldl"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "Lipitor, known generically as atorvastatin calcium and sold under brand name LIPITOR among others (as per Source 1), is a medication used to treat high cholesterol. It belongs to a class of drugs call..."
+    },
+    {
+      "question": "What warnings exist for Metformin?",
+      "category": "warnings",
+      "latency_ms": 12037.21,
+      "answer_length": 375,
+      "keyword_coverage": 0.33,
+      "keywords_found": [
+        "lactic acidosis"
+      ],
+      "keywords_missing": [
+        "renal",
+        "kidney"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "According to Source 1, Metformin has been associated with lactic acidosis in approximately 32% of overdose cases (see Warnings and Precautions on page 5.1). Additionally, it is dialyzable with a clear..."
+    },
+    {
+      "question": "Can I take Ibuprofen with blood thinners?",
+      "category": "interactions",
+      "latency_ms": 27024.96,
+      "answer_length": 1147,
+      "keyword_coverage": 0.75,
+      "keywords_found": [
+        "interaction",
+        "bleeding",
+        "anticoagulant"
+      ],
+      "keywords_missing": [
+        "warfarin"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "According to Source 1, Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID) used as a pain reliever and fever reducer. However, it contains an NSAID which may cause severe stomach bleeding\u2014a war..."
+    },
+    {
+      "question": "What is the dosage for Prozac?",
+      "category": "dosage",
+      "latency_ms": 19004.58,
+      "answer_length": 647,
+      "keyword_coverage": 0.75,
+      "keywords_found": [
+        "mg",
+        "dose",
+        "daily"
+      ],
+      "keywords_missing": [
+        "depression"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": false,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "The dosage for Prozac (fluoxetine hydrochloride) when treating Major Depressive Disorder in adults is to initiate with a daily dose of 20 mg orally, preferably taken in the morning. If there's insuffi..."
+    },
+    {
+      "question": "What are contraindications for Lisinopril?",
+      "category": "contraindications",
+      "latency_ms": 17679.63,
+      "answer_length": 717,
+      "keyword_coverage": 0.0,
+      "keywords_found": [],
+      "keywords_missing": [
+        "pregnancy",
+        "angioedema",
+        "renal",
+        "potassium"
+      ],
+      "has_source": false,
+      "has_disclaimer": true,
+      "has_summary": false,
+      "has_warnings": false,
+      "is_too_short": false,
+      "is_error": false,
+      "success": false,
+      "answer_preview": "Contraindications for Lisinopril, as per Source 1 on page 17 of the FDA label excerpts provided, are not explicitly mentioned in this specific document extract. However, it is important to note that a..."
+    }
+  ]
+}

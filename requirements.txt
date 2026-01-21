@@ -10,3 +10,6 @@ python-dotenv
 rank-bm25               # for BM25 in week 1 days 3–4
 pandas
 requests
+streamlit               # for UI
+langchain-huggingface   # for HuggingFace embeddings
+pypdf                   # for PDF processing

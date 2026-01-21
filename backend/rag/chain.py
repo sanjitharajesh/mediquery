@@ -20,39 +20,40 @@ def _clean_text(text: str) -> str:
 
 def _retriever_fn(question: str) -> str:
     """
-    Ultra-minimal context retrieval with aggressive cleaning.
+    Optimized retrieval for comprehensive answers.
     """
     docs: List[Document] = hybrid_retrieve(
         question,
-        k_chroma=1,
-        k_bm25=1,
-        k_final=1,
+        k_chroma=3,    # More from vector search
+        k_bm25=3,      # More from keyword search
+        k_final=4,     # Get top 4 docs
     )
     
     if not docs:
         return "No relevant information found."
     
-    # Take first doc
-    doc = docs[0]
+    # Use top 2 documents with good content
+    context_parts = []
+    for i, doc in enumerate(docs[:2], 1):
+        content = _clean_text(doc.page_content)
+        content = content[:900]  # More content per doc
+        
+        src = doc.metadata.get("source", "unknown")
+        page = doc.metadata.get("page", "?")
+        
+        context_parts.append(f"[Source {i}: {src}, p.{page}]\n{content}")
     
-    # Clean and truncate aggressively
-    content = _clean_text(doc.page_content)
-    content = content[:300]  # VERY SHORT for now
+    context = "\n\n".join(context_parts)
     
-    src = doc.metadata.get("source", "unknown")
-    page = doc.metadata.get("page", "?")
-    
-    context = f"[{src}, p.{page}]\n{content}"
-    
-    # Final length check
-    if len(context) > 500:
-        context = context[:500]
+    # Allow more context (up to 1800 chars)
+    if len(context) > 1800:
+        context = context[:1800]
     
     return context
 
 class SimpleRAGChain:
     def invoke(self, question: str, verbose: bool = False) -> str:
-        # Get minimal, clean context
+        # Get context
         context = _retriever_fn(question)
         
         if verbose:
@@ -67,12 +68,8 @@ class SimpleRAGChain:
         if verbose:
             print(f"Full prompt length: {len(prompt)} chars\n")
         
-        # Generate answer
+        # Generate answer (no automatic disclaimer)
         answer = generate_answer(prompt, verbose=verbose)
-        
-        # Add disclaimer
-        if answer and "Error:" not in answer:
-            answer += "\n\nDisclaimer: Not medical advice. Consult a healthcare professional."
         
         return answer
 

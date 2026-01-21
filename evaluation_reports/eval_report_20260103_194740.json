@@ -1,0 +1,166 @@
+{
+  "timestamp": "20260103_194740",
+  "total_queries": 7,
+  "successful": 3,
+  "results": [
+    {
+      "question": "What are the side effects of Adderall?",
+      "category": "side_effects",
+      "latency_ms": 16256.64,
+      "answer_length": 269,
+      "keyword_coverage": 0.25,
+      "keywords_found": [
+        "growth"
+      ],
+      "keywords_missing": [
+        "cardiovascular",
+        "psychiatric",
+        "appetite"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": false,
+      "answer_preview": "Summary:  Adderall may cause serious side effects including slowing of growth (height and weight) in children. \nWarnings: Insufficient information\nSource: f22635fe-821d-4cde-aa12-419f8b53db81.pdf, p.1..."
+    },
+    {
+      "question": "Can pregnant women take Accutane?",
+      "category": "pregnancy",
+      "latency_ms": 10872.39,
+      "answer_length": 426,
+      "keyword_coverage": 0.25,
+      "keywords_found": [
+        "pregnancy"
+      ],
+      "keywords_missing": [
+        "contraindicated",
+        "birth defects",
+        "category x"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": false,
+      "answer_preview": "Summary: Pregnant women should not take Accutane.  Patients who can become pregnant must sign a second Patient Enrollment Form and have monthly checkups with their prescriber to ensure pregnancy is ru..."
+    },
+    {
+      "question": "What is Lipitor used for?",
+      "category": "indications",
+      "latency_ms": 9384.0,
+      "answer_length": 346,
+      "keyword_coverage": 0.5,
+      "keywords_found": [
+        "cholesterol",
+        "statin"
+      ],
+      "keywords_missing": [
+        "cardiovascular",
+        "ldl"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "Summary:  Lipitor is a medication used to lower cholesterol levels. It's not recommended for breastfeeding mothers. \nWarnings: Insufficient information.\nSource:  lipitor_atorvastatin_calcium_tablet_fi..."
+    },
+    {
+      "question": "What warnings exist for Metformin?",
+      "category": "warnings",
+      "latency_ms": 13087.79,
+      "answer_length": 570,
+      "keyword_coverage": 0.33,
+      "keywords_found": [
+        "lactic acidosis"
+      ],
+      "keywords_missing": [
+        "renal",
+        "kidney"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "Summary:  Metformin is dialyzable with a clearance of up to 170 mL/minute under good conditions. Lactic acidosis has been reported in approximately 32% of metformin overdose cases. \nWarnings: associat..."
+    },
+    {
+      "question": "Can I take Ibuprofen with blood thinners?",
+      "category": "interactions",
+      "latency_ms": 9631.83,
+      "answer_length": 316,
+      "keyword_coverage": 0.25,
+      "keywords_found": [
+        "interaction"
+      ],
+      "keywords_missing": [
+        "bleeding",
+        "anticoagulant",
+        "warfarin"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": false,
+      "answer_preview": "Summary: This document does not provide information on interactions with blood thinners. \nWarnings: Insufficient information.\nSource: care_one_ibuprofen_ibuprofen_suspension_drops_american_sales_compa..."
+    },
+    {
+      "question": "What is the dosage for Prozac?",
+      "category": "dosage",
+      "latency_ms": 7099.9,
+      "answer_length": 267,
+      "keyword_coverage": 0.5,
+      "keywords_found": [
+        "mg",
+        "dose"
+      ],
+      "keywords_missing": [
+        "daily",
+        "depression"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": true,
+      "answer_preview": "Summary: Initial treatment for Major Depressive Disorder is 20 mg/day of PROZAC orally in the morning.  Consider dose increase after several weeks.\nWarnings: Insufficient information\nSource: 2.1, p.5\n..."
+    },
+    {
+      "question": "What are contraindications for Lisinopril?",
+      "category": "contraindications",
+      "latency_ms": 7184.68,
+      "answer_length": 273,
+      "keyword_coverage": 0.0,
+      "keywords_found": [],
+      "keywords_missing": [
+        "pregnancy",
+        "angioedema",
+        "renal",
+        "potassium"
+      ],
+      "has_source": true,
+      "has_disclaimer": true,
+      "has_summary": true,
+      "has_warnings": true,
+      "is_too_short": false,
+      "is_error": false,
+      "success": false,
+      "answer_preview": "Summary:  Adverse reactions seen with lisinopril were also seen with lisinopril and hydrochlorothiazide tablets. \nWarnings: Insufficient information\nSource: Lisinopril and Hydrochlorothiazide Tablets,..."
+    }
+  ]
+}
