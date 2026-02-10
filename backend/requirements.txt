@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+langchain
+langchain-community
+langchain-text-splitters
+chromadb
+sentence-transformers   # for Instructor / other HF embeddings
+pydantic
+python-dotenv
+rank-bm25               # for BM25 in week 1 days 3–4
+pandas
+requests
+streamlit               # for UI
+gradio                  # for Gradio UI
+langchain-huggingface   # for HuggingFace embeddings
+pypdf                   # for PDF processing
