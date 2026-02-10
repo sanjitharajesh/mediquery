@@ -1,7 +1,7 @@
 # backend/retrievers/chroma_store.py
 from langchain_huggingface import HuggingFaceEmbeddings  # CHANGED
 from langchain_community.vectorstores import Chroma
-from backend.config import CHROMA_DIR, EMBEDDING_MODEL
+from config import CHROMA_DIR, EMBEDDING_MODEL
 
 def get_chroma():
     # UPDATED: Force CPU usage

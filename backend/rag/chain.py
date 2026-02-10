@@ -2,9 +2,9 @@
 import re
 from typing import List
 from langchain_core.documents import Document
-from backend.retrievers.hybrid import hybrid_retrieve
-from backend.rag.prompts import RAG_PROMPT
-from backend.llm import generate_answer
+from retrievers.hybrid import hybrid_retrieve
+from rag.prompts import RAG_PROMPT
+from llm import generate_answer
 
 def _clean_text(text: str) -> str:
     """Remove problematic characters that break LLM processing"""

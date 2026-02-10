@@ -4,7 +4,7 @@ from typing import List, Dict
 
 import requests
 
-from backend.config import DATA_DIR
+from config import DATA_DIR
 
 # DailyMed API endpoints
 SPLS_JSON_URL = "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json"

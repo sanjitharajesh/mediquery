@@ -4,8 +4,8 @@ from typing import List, Set, Tuple
 
 from langchain_core.documents import Document
 
-from backend.retrievers.chroma_store import retrieve_chroma
-from backend.retrievers.bm25_store import retrieve_bm25
+from retrievers.chroma_store import retrieve_chroma
+from retrievers.bm25_store import retrieve_bm25
 
 
 def hybrid_retrieve(

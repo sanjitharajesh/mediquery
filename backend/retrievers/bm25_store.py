@@ -6,7 +6,7 @@ from typing import List, Dict
 
 from rank_bm25 import BM25Okapi
 
-from backend.config import CHUNKS_PATH
+from config import CHUNKS_PATH
 
 _BM25 = None
 _CHUNKS: List[Dict] = []

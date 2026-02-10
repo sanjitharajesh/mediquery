@@ -8,7 +8,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
-from backend.config import DATA_DIR, CHROMA_DIR, CHUNKS_PATH, EMBEDDING_MODEL
+from config import DATA_DIR, CHROMA_DIR, CHUNKS_PATH, EMBEDDING_MODEL
 
 # ============================================================================
 # SMART CHUNKING (Section-Aware)
