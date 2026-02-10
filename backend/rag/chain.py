@@ -2,9 +2,10 @@
 import re
 from typing import List
 from langchain_core.documents import Document
-from retrievers.hybrid import hybrid_retrieve
+from retrievers.pinecone_store import get_pinecone_retriever
 from rag.prompts import RAG_PROMPT
 from llm import generate_answer
+
 
 def _clean_text(text: str) -> str:
     """Remove problematic characters that break LLM processing"""
@@ -60,26 +61,25 @@ def _expand_query(question: str) -> str:
 
 def _retriever_fn(question: str) -> str:
     """
-    Enhanced retrieval with query expansion and aggressive document gathering.
+    Enhanced retrieval using Pinecone vector store.
     """
     # Expand query for better matching
     expanded_question = _expand_query(question)
     
-    docs: List[Document] = hybrid_retrieve(
-        expanded_question,  # Use expanded query
-        k_chroma=8,    # Increased from 6
-        k_bm25=8,      # Increased from 6
-        k_final=10,    # Increased from 8 - get more candidates
-    )
+    # Get Pinecone retriever
+    retriever = get_pinecone_retriever()
+    
+    # Retrieve documents
+    docs: List[Document] = retriever.get_relevant_documents(expanded_question)
     
     if not docs:
         return "No relevant information found."
     
-    # Use top 5 documents (increased from 4)
+    # Use top 5 documents
     context_parts = []
     for i, doc in enumerate(docs[:5], 1):
         content = _clean_text(doc.page_content)
-        content = content[:1000]  # Increased from 900 chars per doc
+        content = content[:1000]
         
         src = doc.metadata.get("source", "unknown")
         page = doc.metadata.get("page", "?")

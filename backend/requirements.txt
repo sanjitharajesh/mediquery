@@ -14,3 +14,5 @@ streamlit               # for UI
 gradio                  # for Gradio UI
 langchain-huggingface   # for HuggingFace embeddings
 pypdf                   # for PDF processing
+pinecone-client
+langchain-pinecone
