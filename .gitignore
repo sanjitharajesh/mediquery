@@ -82,3 +82,5 @@ yarn-error.log*
 # ---------------------------
 **/docker-data/
 **/docker-volume/
+
+data/
