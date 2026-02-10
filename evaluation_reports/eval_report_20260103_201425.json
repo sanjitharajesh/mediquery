@@ -1,9 +1,4 @@
-{
-  "timestamp": "20260103_201425",
-  "total_queries": 7,
-  "successful": 5,
-  "results": [
-    {
+{}
       "question": "What are the side effects of Adderall?",
       "category": "side_effects",
       "latency_ms": 29121.99,

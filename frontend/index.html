@@ -1,50 +1,160 @@
+<!-- frontend/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MediQuery - FDA Drug Assistant</title>
-    <style>
-        body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
-        #query { width: 100%; padding: 10px; font-size: 16px; }
-        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
-        #result { margin-top: 20px; padding: 20px; background: #f5f5f5; border-radius: 5px; white-space: pre-wrap; }
-        .loading { color: #666; font-style: italic; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQuery - AI-powered FDA Drug Information</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>🏥 MediQuery</h1>
-    <p>Ask questions about FDA drug information</p>
-    
-    <input type="text" id="query" placeholder="e.g., What are side effects of Adderall?" />
-    <button onclick="askQuestion()">Search</button>
-    
-    <div id="result"></div>
-    
-    <script>
-        async function askQuestion() {
-            const query = document.getElementById('query').value;
-            const resultDiv = document.getElementById('result');
-            
-            if (!query) return;
-            
-            resultDiv.innerHTML = '<p class="loading">Searching FDA documents...</p>';
-            
-            try {
-                const response = await fetch('http://localhost:8000/query', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: query })
-                });
-                
-                const data = await response.json();
-                resultDiv.innerHTML = `<strong>Answer:</strong>\n\n${data.answer}\n\n<em>Response time: ${data.latency_ms.toFixed(0)}ms</em>`;
-            } catch (error) {
-                resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-            }
-        }
-        
-        document.getElementById('query').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') askQuestion();
-        });
-    </script>
+    <div class="page">
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <h1>MediQuery</h1>
+                <p class="subtitle">AI-powered FDA drug information assistant designed to curb medical hallucination, utilizing only evidence-based official drug labels</p>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-layout">
+                <!-- Left Column -->
+                <aside class="left-column">
+                    <div class="section">
+                        <h2 class="section-header">PERSONAL INFORMATION</h2>
+
+                        <div class="form-group">
+                            <label for="age-group">Age Group</label>
+                            <select id="age-group" class="dropdown">
+                                <option value="">Select</option>
+                                <option value="child">Child (under 12)</option>
+                                <option value="teen">Teen (13-17)</option>
+                                <option value="adult">Adult (18-64)</option>
+                                <option value="senior">Senior (65+)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" class="dropdown">
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="conditions">Pre-existing Conditions</label>
+                            <select id="conditions" class="dropdown">
+                                <option value="">Select</option>
+                                <option value="none">None</option>
+                                <option value="kidney">Kidney disease</option>
+                                <option value="liver">Liver disease</option>
+                                <option value="heart">Heart disease</option>
+                                <option value="diabetes">Diabetes</option>
+                                <option value="hypertension">High blood pressure</option>
+                                <option value="multiple">Multiple conditions</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="medications">Current Medications</label>
+                            <select id="medications" class="dropdown">
+                                <option value="">Select</option>
+                                <option value="none">No medications</option>
+                                <option value="1-2">1-2 medications</option>
+                                <option value="3-5">3-5 medications</option>
+                                <option value="6+">6+ medications</option>
+                                <option value="prefer-not">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="section">
+                        <h2 class="section-header">BROWSE BY CATEGORY</h2>
+
+                        <div class="form-group">
+                            <label for="category">Medical Concern</label>
+                            <select id="category" class="dropdown">
+                                <option value="">Select</option>
+                                <option value="adhd">ADHD & Focus</option>
+                                <option value="depression">Depression & Anxiety</option>
+                                <option value="heart">Heart & Cholesterol</option>
+                                <option value="diabetes">Diabetes</option>
+                                <option value="pain">Pain Relief</option>
+                            </select>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Right Column -->
+                <section class="right-column">
+                    <div class="section">
+                        <h2 class="section-header">ASK A QUESTION</h2>
+
+                        <div class="form-group">
+                            <label for="question-input">Your Question</label>
+                            <textarea
+                                id="question-input"
+                                class="question-input"
+                                placeholder="Example: What are the side effects of Lipitor?"
+                                rows="3"
+                            ></textarea>
+                        </div>
+
+                        <div class="button-group">
+                            <button id="get-answer-btn" class="btn btn-primary">Get Answer</button>
+                            <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                        </div>
+
+                        <div class="common-questions-section">
+                            <p class="common-questions-label">Common Questions (click to use):</p>
+                            <div class="common-questions-grid">
+                                <button class="chip-btn" data-question="What is this medication used for?">
+                                    What is this medication used for?
+                                </button>
+                                <button class="chip-btn" data-question="How should I take this medication?">
+                                    How should I take this medication?
+                                </button>
+                                <button class="chip-btn" data-question="What are the side effects?">
+                                    What are the side effects?
+                                </button>
+                                <button class="chip-btn" data-question="What drugs interact with this?">
+                                    What drugs interact with this?
+                                </button>
+                                <button class="chip-btn" data-question="Can I take this during pregnancy?">
+                                    Can I take this during pregnancy?
+                                </button>
+                                <button class="chip-btn" data-question="When should I avoid this medication?">
+                                    When should I avoid this medication?
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr class="divider divider-full">
+
+                        <div class="answer-section">
+                            <label class="answer-label">Answer</label>
+                            <div id="answer-box" class="answer-box">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                © 2026 Sanjitha Rajesh · Built with <span class="footer-highlight">FastAPI</span>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
 </body>
 </html>

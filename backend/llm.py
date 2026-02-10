@@ -2,6 +2,11 @@
 import requests
 import json
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 
 # Configuration
 USE_GROQ = os.getenv("USE_GROQ", "false").lower() == "true"
@@ -9,14 +14,6 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "gemma2:2b"
 
 def generate_answer(prompt: str, verbose: bool = False) -> str:
-    """
-    Generate answer using either Groq (cloud, fast) or Ollama (local, slower)
-    
-    To use Groq:
-    1. Get API key from https://console.groq.com/
-    2. export GROQ_API_KEY=your_key_here
-    3. export USE_GROQ=true
-    """
     
     if USE_GROQ:
         return _generate_groq(prompt, verbose)
@@ -40,9 +37,9 @@ def _generate_groq(prompt: str, verbose: bool = False) -> str:
         
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile",  # Updated model name
-            temperature=0.2,
-            max_tokens=500,  # More tokens for complete answers
+            model="llama-3.3-70b-versatile",
+            temperature=0.3,  # Slightly increased for better extraction
+            max_tokens=800,  # Increased for comprehensive extraction
             top_p=0.9,
         )
         
@@ -73,9 +70,9 @@ def _generate_ollama(prompt: str, verbose: bool = False) -> str:
         "prompt": prompt,
         "stream": True,
         "options": {
-            "num_predict": 250,
-            "num_ctx": 1200,
-            "temperature": 0.1,
+            "num_predict": 300,
+            "num_ctx": 1500,
+            "temperature": 0.2,  # Slightly increased for better extraction
             "top_p": 0.9,
         }
     }

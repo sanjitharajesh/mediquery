@@ -18,25 +18,68 @@ def _clean_text(text: str) -> str:
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
+def _expand_query(question: str) -> str:
+    """Add synonyms and related terms to improve retrieval with enhanced medical terminology"""
+    question_lower = question.lower()
+    
+    # Drug name expansions with comprehensive medical terms
+    drug_map = {
+        "adderall": " amphetamine dextroamphetamine adhd stimulant adverse reactions cardiovascular psychiatric appetite insomnia tachycardia hypertension",
+        "ritalin": " methylphenidate adhd stimulant adverse reactions cardiovascular psychiatric appetite",
+        "accutane": " isotretinoin acne contraindications warnings teratogenic pregnancy birth-defects",
+        "lipitor": " atorvastatin statin cholesterol ldl hdl hyperlipidemia dyslipidemia cardiovascular coronary heart-disease myocardial-infarction stroke atherosclerosis",
+        "prozac": " fluoxetine ssri depression dosage milligrams mg daily administration",
+        "metformin": " glucophage diabetes type-2-diabetes lactic-acidosis warnings renal kidney impairment contraindications",
+        "lisinopril": " ace-inhibitor angiotensin-converting-enzyme antihypertensive blood-pressure hypertension contraindications angioedema pregnancy fetal-harm hypersensitivity",
+        "tretinoin": " retin-a retinoid acne skin photosensitivity pregnancy teratogenic topical",
+        "ibuprofen": " nsaid nonsteroidal anti-inflammatory pain analgesic bleeding anticoagulant warfarin aspirin interactions",
+    }
+    
+    for drug, expansion in drug_map.items():
+        if drug in question_lower:
+            question += expansion
+            break
+    
+    # Category expansions with enhanced medical terminology
+    if "side effect" in question_lower or "adverse" in question_lower:
+        question += " adverse-reactions side-effects adverse-events toxicity safety-profile common serious"
+    elif "contraindication" in question_lower or "should not" in question_lower or "avoid" in question_lower or "not be used" in question_lower:
+        question += " contraindications warnings precautions boxed-warning contraindicated do-not-use avoid-use"
+    elif "interaction" in question_lower:
+        question += " drug-interactions concomitant-use drug-combinations pharmacokinetic pharmacodynamic"
+    elif "dosage" in question_lower or "dose" in question_lower:
+        question += " dosage-administration recommended-dose milligrams mg daily administration dosing-schedule"
+    elif "pregnancy" in question_lower or "pregnant" in question_lower:
+        question += " pregnancy contraindications teratogenic fetal-harm lactation nursing-mothers use-in-pregnancy pregnancy-category"
+    elif "warning" in question_lower:
+        question += " warnings-and-precautions boxed-warning contraindications serious-adverse-events"
+    elif "use" in question_lower and "for" in question_lower or "used for" in question_lower:
+        question += " indications-and-usage therapeutic-indication clinical-indications approved-uses treatment"
+    
+    return question
+
 def _retriever_fn(question: str) -> str:
     """
-    Optimized retrieval for comprehensive answers.
+    Enhanced retrieval with query expansion and aggressive document gathering.
     """
+    # Expand query for better matching
+    expanded_question = _expand_query(question)
+    
     docs: List[Document] = hybrid_retrieve(
-        question,
-        k_chroma=3,    # More from vector search
-        k_bm25=3,      # More from keyword search
-        k_final=4,     # Get top 4 docs
+        expanded_question,  # Use expanded query
+        k_chroma=8,    # Increased from 6
+        k_bm25=8,      # Increased from 6
+        k_final=10,    # Increased from 8 - get more candidates
     )
     
     if not docs:
         return "No relevant information found."
     
-    # Use top 2 documents with good content
+    # Use top 5 documents (increased from 4)
     context_parts = []
-    for i, doc in enumerate(docs[:2], 1):
+    for i, doc in enumerate(docs[:5], 1):
         content = _clean_text(doc.page_content)
-        content = content[:900]  # More content per doc
+        content = content[:1000]  # Increased from 900 chars per doc
         
         src = doc.metadata.get("source", "unknown")
         page = doc.metadata.get("page", "?")
@@ -45,15 +88,15 @@ def _retriever_fn(question: str) -> str:
     
     context = "\n\n".join(context_parts)
     
-    # Allow more context (up to 1800 chars)
-    if len(context) > 1800:
-        context = context[:1800]
+    # Allow more total context for comprehensive coverage
+    if len(context) > 4000:
+        context = context[:4000]
     
     return context
 
 class SimpleRAGChain:
     def invoke(self, question: str, verbose: bool = False) -> str:
-        # Get context
+        # Get context with query expansion
         context = _retriever_fn(question)
         
         if verbose:
@@ -68,7 +111,7 @@ class SimpleRAGChain:
         if verbose:
             print(f"Full prompt length: {len(prompt)} chars\n")
         
-        # Generate answer (no automatic disclaimer)
+        # Generate answer
         answer = generate_answer(prompt, verbose=verbose)
         
         return answer
