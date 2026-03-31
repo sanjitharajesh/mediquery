@@ -10,6 +10,9 @@ load_dotenv()
 
 # Configuration
 USE_GROQ = os.getenv("USE_GROQ", "false").lower() == "true"
+
+# Populated after each Groq call; read by chain.py for Langfuse metadata.
+_last_token_usage: dict = {}
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "gemma2:2b"
 
@@ -44,10 +47,17 @@ def _generate_groq(prompt: str, verbose: bool = False) -> str:
         )
         
         answer = response.choices[0].message.content.strip()
-        
+
+        global _last_token_usage
+        _last_token_usage = {
+            "prompt_tokens": response.usage.prompt_tokens,
+            "completion_tokens": response.usage.completion_tokens,
+            "total_tokens": response.usage.total_tokens,
+        }
+
         if verbose:
             print(f"[Groq: {len(answer)} chars received]")
-        
+
         return answer
         
     except ImportError:

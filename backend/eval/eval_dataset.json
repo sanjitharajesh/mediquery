@@ -1,0 +1,78 @@
+[
+  {
+    "question": "What are the side effects of Adderall?",
+    "expected_answer": "Adderall can cause serious side effects including cardiovascular effects such as increased heart rate and elevated blood pressure, psychiatric effects such as new or worsening psychosis or mania, decreased appetite, insomnia, and growth suppression in pediatric patients."
+  },
+  {
+    "question": "Can pregnant women take Accutane?",
+    "expected_answer": "Accutane is contraindicated in pregnant women because it is a known teratogen that causes severe birth defects; it is classified as Pregnancy Category X and must never be used during pregnancy under any circumstances."
+  },
+  {
+    "question": "What is Lipitor used for?",
+    "expected_answer": "Lipitor (atorvastatin) is a statin medication used to lower LDL cholesterol and triglycerides, raise HDL cholesterol, and reduce the risk of cardiovascular events such as heart attack and stroke in patients with hyperlipidemia or dyslipidemia."
+  },
+  {
+    "question": "What warnings exist for Metformin?",
+    "expected_answer": "Metformin carries a boxed warning for lactic acidosis, a rare but potentially fatal complication; it should not be used in patients with renal impairment, hepatic impairment, or those who consume excessive alcohol, as these conditions increase the risk of lactic acidosis."
+  },
+  {
+    "question": "Can I take Ibuprofen with blood thinners?",
+    "expected_answer": "Ibuprofen should not be taken with anticoagulants such as warfarin because NSAIDs inhibit platelet aggregation and can cause serious gastrointestinal bleeding; concurrent use significantly increases the risk of bleeding complications."
+  },
+  {
+    "question": "What is the dosage for Prozac?",
+    "expected_answer": "The recommended starting dose of Prozac (fluoxetine) for adults treating Major Depressive Disorder is 20 mg orally once daily in the morning; the dose may be increased after several weeks if insufficient response is observed, up to a maximum of 80 mg per day."
+  },
+  {
+    "question": "What are contraindications for Lisinopril?",
+    "expected_answer": "Lisinopril is contraindicated in patients with a history of angioedema related to prior ACE inhibitor therapy, in patients with hereditary or idiopathic angioedema, and in pregnant women due to the risk of fetal harm; concomitant use with aliskiren is also contraindicated in patients with diabetes."
+  },
+  {
+    "question": "Can Metformin be taken with alcohol?",
+    "expected_answer": "Metformin should not be taken with excessive alcohol because alcohol potentiates the effect of metformin on lactate metabolism, significantly increasing the risk of lactic acidosis, which can be life-threatening."
+  },
+  {
+    "question": "What drug interactions does Lisinopril have with potassium supplements?",
+    "expected_answer": "Lisinopril can cause hyperkalemia when taken concomitantly with potassium supplements, potassium-sparing diuretics, or potassium-containing salt substitutes, because ACE inhibitors reduce aldosterone production and thereby decrease potassium excretion."
+  },
+  {
+    "question": "What is the recommended dosage for Adderall in adults with ADHD?",
+    "expected_answer": "For adults with ADHD, the recommended starting dose of Adderall is 5 mg once or twice daily, which may be titrated in weekly increments of 5 mg; the maximum recommended dose is 40 mg per day administered in divided doses."
+  },
+  {
+    "question": "What is the dosage of Accutane for severe acne?",
+    "expected_answer": "Accutane (isotretinoin) is typically dosed at 0.5 to 1 mg per kg of body weight per day in two divided doses for 15 to 20 weeks; the cumulative dose over the treatment course should be 120 to 150 mg per kg to achieve remission of severe recalcitrant nodular acne."
+  },
+  {
+    "question": "What are the contraindications for Ibuprofen?",
+    "expected_answer": "Ibuprofen is contraindicated in patients with known hypersensitivity to ibuprofen or other NSAIDs, in patients who have experienced asthma, urticaria, or allergic reactions after taking aspirin or other NSAIDs, and in the setting of coronary artery bypass graft surgery."
+  },
+  {
+    "question": "What are the contraindications for Tretinoin topical?",
+    "expected_answer": "Tretinoin topical is contraindicated in patients with eczema or sunburned skin, in those with a known hypersensitivity to retinoids or any component of the formulation, and should be used with extreme caution during pregnancy due to the potential teratogenic risk associated with the retinoid class."
+  },
+  {
+    "question": "What are the side effects of Ozempic?",
+    "expected_answer": "Ozempic is not available in this database; no FDA drug label information for this medication has been indexed."
+  },
+  {
+    "question": "What is the dosage for Warfarin?",
+    "expected_answer": "Warfarin is not available in this database; no FDA drug label information for this medication has been indexed."
+  },
+  {
+    "question": "What are the side effects of Humira?",
+    "expected_answer": "Humira is not available in this database; no FDA drug label information for this medication has been indexed."
+  },
+  {
+    "question": "What are the contraindications for Keytruda?",
+    "expected_answer": "Keytruda is not available in this database; no FDA drug label information for this medication has been indexed."
+  },
+  {
+    "question": "What is the dosage for Jardiance?",
+    "expected_answer": "Jardiance is not available in this database; no FDA drug label information for this medication has been indexed."
+  },
+  {
+    "question": "What drug interactions does Eliquis have?",
+    "expected_answer": "Eliquis is not available in this database; no FDA drug label information for this medication has been indexed."
+  }
+]

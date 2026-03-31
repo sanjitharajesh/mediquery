@@ -1,10 +1,13 @@
 # backend/rag/chain.py
 import re
-from typing import List
+import time
+from typing import List, Tuple
 from langchain_core.documents import Document
+from langfuse import observe
+from observability.langfuse_tracing import langfuse_client  # init registers global OTEL tracer
 from retrievers.pinecone_store import get_pinecone_retriever
 from rag.prompts import RAG_PROMPT
-from llm import generate_answer
+from llm import generate_answer, _last_token_usage
 
 
 def _clean_text(text: str) -> str:
@@ -59,61 +62,98 @@ def _expand_query(question: str) -> str:
     
     return question
 
-def _retriever_fn(question: str) -> str:
+@observe(name="retrieval")
+def _retriever_fn(question: str) -> Tuple[str, List[str]]:
     """
     Enhanced retrieval using Pinecone vector store.
+    Returns (formatted_context_str, raw_context_texts) for tracing and RAGAS.
     """
     # Expand query for better matching
     expanded_question = _expand_query(question)
-    
+
     # Get Pinecone retriever
     retriever = get_pinecone_retriever()
-    
+
     # Retrieve documents
-    docs: List[Document] = retriever.get_relevant_documents(expanded_question)
-    
+    docs: List[Document] = retriever.invoke(expanded_question)
+
     if not docs:
-        return "No relevant information found."
-    
+        langfuse_client.update_current_span(output="No relevant information found.")
+        return "No relevant information found.", []
+
     # Use top 5 documents
     context_parts = []
+    raw_contexts: List[str] = []
     for i, doc in enumerate(docs[:5], 1):
         content = _clean_text(doc.page_content)
         content = content[:1000]
-        
+        raw_contexts.append(content)
+
         src = doc.metadata.get("source", "unknown")
         page = doc.metadata.get("page", "?")
-        
+
         context_parts.append(f"[Source {i}: {src}, p.{page}]\n{content}")
-    
+
     context = "\n\n".join(context_parts)
-    
+
     # Allow more total context for comprehensive coverage
     if len(context) > 4000:
         context = context[:4000]
-    
-    return context
+
+    langfuse_client.update_current_span(
+        input=question,
+        output=raw_contexts,
+        metadata={"num_docs": len(raw_contexts), "context_length": len(context)},
+    )
+
+    return context, raw_contexts
 
 class SimpleRAGChain:
+    def __init__(self):
+        self._last_trace_id: str | None = None
+        self._last_contexts: List[str] = []
+
+    @observe(name="rag_query")
     def invoke(self, question: str, verbose: bool = False) -> str:
-        # Get context with query expansion
-        context = _retriever_fn(question)
-        
+        start = time.time()
+
+        # Log the incoming question on the trace
+        langfuse_client.update_current_span(input=question)
+
+        # Get context with query expansion (sub-span logged inside _retriever_fn)
+        context, raw_contexts = _retriever_fn(question)
+
         if verbose:
             print(f"\n{'='*60}")
             print(f"Context length: {len(context)} chars")
             print(f"Context preview: {context[:200]}...")
             print(f"{'='*60}\n")
-        
+
         # Build prompt
         prompt = RAG_PROMPT.format(context=context, question=question)
-        
+
         if verbose:
             print(f"Full prompt length: {len(prompt)} chars\n")
-        
+
         # Generate answer
         answer = generate_answer(prompt, verbose=verbose)
-        
+
+        latency_ms = round((time.time() - start) * 1000, 2)
+
+        # Log output, latency, token counts, and retrieved contexts to Langfuse
+        langfuse_client.update_current_span(
+            output=answer,
+            metadata={
+                "latency_ms": latency_ms,
+                "context_length": len(context),
+                "retrieved_contexts": raw_contexts,
+                **_last_token_usage,
+            },
+        )
+
+        self._last_trace_id = langfuse_client.get_current_trace_id()
+        self._last_contexts = raw_contexts
+
         return answer
 
 def get_rag_chain() -> SimpleRAGChain:

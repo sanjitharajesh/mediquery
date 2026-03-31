@@ -16,3 +16,7 @@ langchain-huggingface   # for HuggingFace embeddings
 pypdf                   # for PDF processing
 pinecone-client
 langchain-pinecone
+langchain-groq              # Groq LangChain integration (RAGAS judge LLM)
+langfuse                    # tracing + score posting
+ragas                       # RAG evaluation metrics
+datasets                    # HuggingFace datasets (RAGAS Dataset wrapper)

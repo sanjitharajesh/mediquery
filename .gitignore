@@ -84,3 +84,8 @@ yarn-error.log*
 **/docker-volume/
 
 data/
+
+# ---------------------------
+# Python packaging
+# ---------------------------
+*.egg-info/
