@@ -1,25 +1,35 @@
-# MediQuery
+# Mediquery — LLM-Powered Drug Query System
 
-AI-powered FDA drug information assistant designed to curb medical hallucination by utilizing only evidence-based official drug labels. Built with FastAPI and RAG to provide accurate, source-backed medication information.
+AI-powered FDA drug information assistant that answers medication 
+questions using only official FDA drug labels, eliminating hallucination 
+by grounding every response in evidence-based sources.
 
 ## Features
-
-- **Evidence-Based Answers**: Responses sourced exclusively from official FDA drug labels
-- **Common Questions**: Quick-access buttons for frequently asked queries
-- **Personalized Context**: Optional user information (age, conditions, medications) for tailored responses
-- **Source Attribution**: All answers include references to FDA documentation
+- Responses sourced exclusively from official FDA drug labels
+- Hybrid BM25 + Pinecone retrieval with round-robin merge
+- Optional user context (age, conditions, medications) for tailored answers
+- Full source attribution on every response
 
 ## Tech Stack
 
-**Backend:**
-- FastAPI
-- LangChain
-- Pinecone (Vector Database)
-- Groq LLM API
-- HuggingFace Embeddings
+**Backend:** FastAPI, LangChain, Groq (llama-3.3-70b-versatile), 
+HuggingFace Embeddings (all-MiniLM-L6-v2), Pinecone (384-dim cosine index)
 
-**Frontend:**
-- HTML/CSS/JavaScript
+**Frontend:** HTML, CSS, JavaScript
 
-**Deployment:**
-- Render (Backend hosting)
+**Observability:** Langfuse (per-query latency, token usage, context tracing), 
+RAGAS (faithfulness, answer relevancy, context precision), 
+rolling faithfulness drift detection
+
+**Deployment:** Render
+
+## Evaluation
+RAGAS scores posted back to Langfuse 
+per trace for per-query quality tracking.
+
+## Setup
+```bash
+pip install -r requirements.txt
+cp .env.example .env  # add your API keys
+uvicorn main:app --reload
+```
