@@ -30,6 +30,6 @@ per trace for per-query quality tracking.
 ## Setup
 ```bash
 pip install -r requirements.txt
-cp .env.example .env  # add your API keys
+cp .env.example .env  
 uvicorn main:app --reload
 ```
