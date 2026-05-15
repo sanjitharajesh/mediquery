@@ -14,8 +14,9 @@ streamlit               # for UI
 gradio                  # for Gradio UI
 langchain-huggingface   # for HuggingFace embeddings
 pypdf                   # for PDF processing
-pinecone-client
+pinecone
 langchain-pinecone
+groq                        # Groq SDK (direct client used in llm.py)
 langchain-groq              # Groq LangChain integration (RAGAS judge LLM)
 langfuse                    # tracing + score posting
 ragas                       # RAG evaluation metrics

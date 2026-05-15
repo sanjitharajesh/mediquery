@@ -1,5 +1,10 @@
 // MediQuery Frontend JavaScript
 
+// API base URL — empty string uses relative paths (works when the frontend is served by the
+// FastAPI backend, both locally and on Render). Set this to your full Render service URL
+// (e.g. 'https://mediquery.onrender.com') only if you host the frontend separately.
+const API_BASE_URL = '';
+
 // DOM Elements
 const questionInput = document.getElementById('question-input');
 const getAnswerBtn = document.getElementById('get-answer-btn');
@@ -61,7 +66,7 @@ async function handleGetAnswer() {
     showLoadingMessage();
 
     try {
-        const response = await fetch('/ask', {
+        const response = await fetch(`${API_BASE_URL}/ask`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

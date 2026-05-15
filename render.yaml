@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: mediquery
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+
+      # LLM
+      - key: GROQ_API_KEY
+        sync: false
+      - key: USE_GROQ
+        value: "true"
+
+      # Vector database
+      - key: PINECONE_API_KEY
+        sync: false
+
+      # Observability
+      - key: LANGFUSE_PUBLIC_KEY
+        sync: false
+      - key: LANGFUSE_SECRET_KEY
+        sync: false
+      - key: LANGFUSE_BASE_URL
+        sync: false
+
+      # HuggingFace tokenizer — disable parallelism to avoid forking issues on Render
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
