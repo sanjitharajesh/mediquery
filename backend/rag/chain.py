@@ -3,7 +3,7 @@ import re
 import time
 from typing import List, Tuple
 from langchain_core.documents import Document
-from langfuse import observe
+from langfuse.decorators import observe
 from observability.langfuse_tracing import langfuse_client  # init registers global OTEL tracer
 from retrievers.hybrid import hybrid_retrieve
 from rag.prompts import RAG_PROMPT
