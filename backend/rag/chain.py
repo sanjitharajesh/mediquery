@@ -171,11 +171,7 @@ def _retriever_fn(question: str) -> Tuple[str, List[str]]:
     Returns (formatted_context_str, raw_context_texts) for tracing and RAGAS.
     """
     if _is_outside_index_request(question):
-        langfuse_client.update_current_span(
-            input=question,
-            output=FALLBACK_MESSAGE,
-            metadata={"fallback": True, "reason": "medication_outside_index"},
-        )
+        pass  # langfuse span update skipped for compatibility
         return FALLBACK_MESSAGE, []
 
     # Expand query for better matching
@@ -186,15 +182,7 @@ def _retriever_fn(question: str) -> Tuple[str, List[str]]:
 
     top_score = docs[0].metadata.get("rrf_score", 0.0) if docs else 0.0
     if not docs or top_score < MIN_FUSED_RRF_SCORE:
-        langfuse_client.update_current_span(
-            input=question,
-            output=FALLBACK_MESSAGE,
-            metadata={
-                "fallback": True,
-                "reason": "retrieval_below_threshold",
-                "top_rrf_score": top_score,
-            },
-        )
+        pass  # langfuse span update skipped for compatibility
         return FALLBACK_MESSAGE, []
 
     # Use top 5 documents
@@ -217,16 +205,7 @@ def _retriever_fn(question: str) -> Tuple[str, List[str]]:
     if len(context) > 4000:
         context = context[:4000]
 
-    langfuse_client.update_current_span(
-        input=question,
-        output=raw_contexts,
-        metadata={
-            "num_docs": len(raw_contexts),
-            "context_length": len(context),
-            "top_rrf_score": top_score,
-            "retrieval": "rrf_bm25_pinecone",
-        },
-    )
+    pass  # langfuse span update skipped for compatibility
 
     return context, raw_contexts
 
@@ -239,24 +218,15 @@ class SimpleRAGChain:
     def invoke(self, question: str, verbose: bool = False) -> str:
         start = time.time()
 
-        # Log the incoming question on the trace
-        langfuse_client.update_current_span(input=question)
+        pass  # langfuse span update skipped for compatibility
 
         # Get context with query expansion (sub-span logged inside _retriever_fn)
         context, raw_contexts = _retriever_fn(question)
 
         if context == FALLBACK_MESSAGE and not raw_contexts:
             latency_ms = round((time.time() - start) * 1000, 2)
-            langfuse_client.update_current_span(
-                output=context,
-                metadata={
-                    "latency_ms": latency_ms,
-                    "fallback": True,
-                    "context_length": 0,
-                    "retrieved_contexts": [],
-                },
-            )
-            self._last_trace_id = langfuse_client.get_current_trace_id()
+            pass  # langfuse span update skipped for compatibility
+            self._last_trace_id = None
             self._last_contexts = []
             return context
 
@@ -277,18 +247,9 @@ class SimpleRAGChain:
 
         latency_ms = round((time.time() - start) * 1000, 2)
 
-        # Log output, latency, token counts, and retrieved contexts to Langfuse
-        langfuse_client.update_current_span(
-            output=answer,
-            metadata={
-                "latency_ms": latency_ms,
-                "context_length": len(context),
-                "retrieved_contexts": raw_contexts,
-                **llm._last_token_usage,
-            },
-        )
+        pass  # langfuse span update skipped for compatibility
 
-        self._last_trace_id = langfuse_client.get_current_trace_id()
+        self._last_trace_id = None
         self._last_contexts = raw_contexts
 
         return answer
