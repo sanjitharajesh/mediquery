@@ -2,7 +2,6 @@
 #
 # Instantiating Langfuse() registers the global OpenTelemetry tracer so that
 # @observe() (imported from langfuse.decorators) picks up the correct project/host.
-# Use LANGFUSE_BASE_URL (not LANGFUSE_HOST) per project convention.
 import os
 from dotenv import load_dotenv
 from langfuse import Langfuse

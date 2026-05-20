@@ -2,12 +2,15 @@
 FastAPI backend for MediQuery
 Reuses existing RAG chain from backend/rag/chain.py
 """
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rag.chain import get_rag_chain
+
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
 # Initialize FastAPI app
 app = FastAPI(title="MediQuery API", version="1.0.0")
@@ -90,12 +93,12 @@ async def health_check():
     return {"status": "healthy", "service": "MediQuery API"}
 
 # Serve frontend static files
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 
 @app.get("/")
 async def serve_frontend():
     """Serve the main HTML page"""
-    return FileResponse("frontend/index.html")
+    return FileResponse(str(FRONTEND_DIR / "index.html"))
 
 if __name__ == "__main__":
     import uvicorn
