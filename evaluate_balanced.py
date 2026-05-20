@@ -9,7 +9,31 @@ This is the single evaluation script used for reporting metrics.
 
 import time
 import re
-from backend.rag.chain import get_rag_chain
+import json
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+
+import requests
+from dotenv import load_dotenv
+
+ROOT_DIR = Path(__file__).resolve().parent
+BACKEND_DIR = ROOT_DIR / "backend"
+sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(BACKEND_DIR))
+
+load_dotenv(ROOT_DIR / ".env")
+os.environ["USE_GROQ"] = "true"
+os.environ["GROQ_MODEL"] = "llama-3.1-8b-instant"
+
+# RAGAS evaluation is intentionally disabled for the keyword coverage run.
+# from datasets import Dataset
+# from langchain_core.embeddings import Embeddings
+# from langchain_groq import ChatGroq
+# from ragas import evaluate
+# from ragas.metrics import faithfulness, answer_relevancy, context_precision
+# from ragas.run_config import RunConfig
 
 # ---------------------------------------------------------------------------
 # Medical-Aware Keyword Matching (inlined for single-script evaluation)
@@ -185,6 +209,80 @@ BALANCED_EVAL_QUERIES = [
     },
 ]
 
+REPORTS_DIR = ROOT_DIR / "evaluation_reports"
+EVAL_ENDPOINT = os.getenv("MEDIQUERY_EVAL_ENDPOINT", "http://127.0.0.1:8000/eval-ask")
+
+
+def build_reference(q: dict) -> str:
+    return (
+        f"A correct answer for this {q['category']} question should address: "
+        f"{', '.join(q['keywords'])}."
+    )
+
+
+def call_eval_endpoint(question: str) -> tuple[str, list[str]]:
+    response = requests.post(
+        EVAL_ENDPOINT,
+        json={"question": question},
+        timeout=180,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return payload["answer"], payload.get("retrieved_contexts", [])
+
+
+# RAGAS section disabled.
+# def run_ragas_metrics(results: list) -> tuple[dict, list]:
+#     ...
+#
+# def print_ragas_results(aggregate: dict, per_sample: list, results: list) -> None:
+#     ...
+
+
+def save_report(results: list, summary: dict) -> Path:
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    report_path = REPORTS_DIR / f"eval_report_{timestamp}.json"
+
+    report_results = []
+    for result in results:
+        report_results.append({
+            "question": result["question"],
+            "category": result["category"],
+            "latency_ms": round(result["latency_s"] * 1000, 2),
+            "answer_length": result["length"],
+            "keyword_coverage": result["coverage"],
+            "keywords_found": result["found"],
+            "keywords_missing": result["missing"],
+            "has_source": result["has_source"],
+            "has_disclaimer": result["has_disclaimer"],
+            "has_summary": result["has_summary"],
+            "has_warnings": result["has_warnings"],
+            "is_too_short": result["is_too_short"],
+            "is_error": result["is_error"],
+            "success": result["success"],
+            "answer_preview": result["answer"][:200] + ("..." if len(result["answer"]) > 200 else ""),
+            "difficulty": result["difficulty"],
+            "expected": result["expected"],
+        })
+
+    payload = {
+        "metadata": {
+            "timestamp": timestamp,
+            "eval_script": "evaluate_balanced.py",
+            "rag_llm": "groq/llama-3.1-8b-instant",
+            "metrics": ["keyword_coverage", "success_rate", "latency"],
+            "query_count": len(results),
+        },
+        "summary": summary,
+        "results": report_results,
+    }
+
+    with open(report_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
+
+    return report_path
+
 
 def main():
     print("\n" + "="*70)
@@ -192,9 +290,10 @@ def main():
     print("="*70)
     print(f"  {len(BALANCED_EVAL_QUERIES)} queries designed for 80-85% accuracy")
     print(f"  Tests core strengths while acknowledging known limitations")
+    print(f"  RAG LLM: Groq llama-3.1-8b-instant")
+    print(f"  Eval endpoint: {EVAL_ENDPOINT}")
     print("="*70)
 
-    chain = get_rag_chain()
     results = []
     by_expected = {'pass': [], 'likely_pass': [], 'borderline': [], 'fail': []}
     by_difficulty = {'easy': [], 'medium': [], 'hard': []}
@@ -205,15 +304,19 @@ def main():
         print(f"  Difficulty: {diff} | Expected: {expected}")
 
         start = time.time()
-        answer = chain.invoke(q['question'], verbose=False)
+        answer, retrieved_contexts = call_eval_endpoint(q['question'])
         latency_s = time.time() - start
 
         found, coverage, details = check_coverage_medical(q['keywords'], answer)
+        missing = [kw for kw in q['keywords'] if kw not in found]
         length = len(answer)
         success = coverage >= 0.5 and length >= 150
 
         result = {
             'question': q['question'],
+            'answer': answer,
+            'contexts': retrieved_contexts,
+            'ground_truth': build_reference(q),
             'success': success,
             'coverage': coverage,
             'latency_s': latency_s,
@@ -222,9 +325,16 @@ def main():
             'difficulty': diff,
             'expected': expected,
             'found': found,
+            'missing': missing,
             'total': len(q['keywords']),
             'note': q.get('note', ''),
-            'details': details
+            'details': details,
+            'has_source': 'source' in answer.lower(),
+            'has_disclaimer': 'disclaimer' in answer.lower(),
+            'has_summary': 'summary' in answer.lower(),
+            'has_warnings': any(term in answer.lower() for term in ['warning', 'warnings', 'boxed warning']),
+            'is_too_short': length < 150,
+            'is_error': answer.lower().startswith('error:'),
         }
         results.append(result)
         by_expected[expected].append(result)
@@ -250,6 +360,14 @@ def main():
     avg_time = sum(r['latency_s'] for r in results) / total
     avg_coverage = sum(r['coverage'] for r in results) / total
     avg_length = sum(r['length'] for r in results) / total
+    summary = {
+        "success_rate": success_rate,
+        "passed": passed,
+        "total": total,
+        "avg_coverage": avg_coverage,
+        "avg_latency_s": avg_time,
+        "avg_length": avg_length,
+    }
 
     print(f"\n📈 Overall Performance:")
     print(f"  Success Rate:     {passed}/{total} ({success_rate:.0%})")
@@ -376,6 +494,14 @@ def main():
     print("  • Good on comparative queries (drug comparisons)")
     print("  • Expected limitations on clinical reasoning (mechanisms)")
     print("="*70 + "\n")
+
+    # RAGAS evaluation disabled for this keyword coverage report.
+    # print("Running RAGAS evaluation with Groq llama-3.1-8b-instant...")
+    # ragas_aggregate, ragas_per_sample = run_ragas_metrics(results)
+    # print_ragas_results(ragas_aggregate, ragas_per_sample, results)
+
+    report_path = save_report(results, summary)
+    print(f"\nSaved evaluation report to {report_path}")
 
 
 if __name__ == "__main__":

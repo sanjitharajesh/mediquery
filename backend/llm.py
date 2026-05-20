@@ -10,6 +10,7 @@ load_dotenv()
 
 # Configuration
 USE_GROQ = os.getenv("USE_GROQ", "false").lower() == "true"
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 # Populated after each Groq call; read by chain.py for Langfuse metadata.
 _last_token_usage: dict = {}
@@ -40,7 +41,7 @@ def _generate_groq(prompt: str, verbose: bool = False) -> str:
         
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model="llama-3.3-70b-versatile",
+            model=GROQ_MODEL,
             temperature=0.3,  # Slightly increased for better extraction
             max_tokens=800,  # Increased for comprehensive extraction
             top_p=0.9,

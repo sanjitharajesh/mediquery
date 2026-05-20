@@ -1,159 +1,183 @@
-<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediQuery - AI-powered FDA Drug Information</title>
+    <title>MediQuery - FDA Drug Information</title>
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <div class="page">
-        <div class="container">
-            <!-- Header -->
-            <header>
-                <h1>MediQuery</h1>
-                <p class="subtitle">AI-powered FDA drug information assistant designed to curb medical hallucination, utilizing only evidence-based official drug labels</p>
-            </header>
 
-            <!-- Main Content -->
-            <main class="main-layout">
-                <!-- Left Column -->
-                <aside class="left-column">
-                    <div class="section">
-                        <h2 class="section-header">PERSONAL INFORMATION</h2>
-
-                        <div class="form-group">
-                            <label for="age-group">Age Group</label>
-                            <select id="age-group" class="dropdown">
-                                <option value="">Select</option>
-                                <option value="child">Child (under 12)</option>
-                                <option value="teen">Teen (13-17)</option>
-                                <option value="adult">Adult (18-64)</option>
-                                <option value="senior">Senior (65+)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <select id="gender" class="dropdown">
-                                <option value="">Select</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="conditions">Pre-existing Conditions</label>
-                            <select id="conditions" class="dropdown">
-                                <option value="">Select</option>
-                                <option value="none">None</option>
-                                <option value="kidney">Kidney disease</option>
-                                <option value="liver">Liver disease</option>
-                                <option value="heart">Heart disease</option>
-                                <option value="diabetes">Diabetes</option>
-                                <option value="hypertension">High blood pressure</option>
-                                <option value="multiple">Multiple conditions</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="medications">Current Medications</label>
-                            <select id="medications" class="dropdown">
-                                <option value="">Select</option>
-                                <option value="none">No medications</option>
-                                <option value="1-2">1-2 medications</option>
-                                <option value="3-5">3-5 medications</option>
-                                <option value="6+">6+ medications</option>
-                                <option value="prefer-not">Prefer not to say</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <hr class="divider">
-
-                    <div class="section">
-                        <h2 class="section-header">BROWSE BY CATEGORY</h2>
-
-                        <div class="form-group">
-                            <label for="category">Medical Concern</label>
-                            <select id="category" class="dropdown">
-                                <option value="">Select</option>
-                                <option value="adhd">ADHD & Focus</option>
-                                <option value="depression">Depression & Anxiety</option>
-                                <option value="heart">Heart & Cholesterol</option>
-                                <option value="diabetes">Diabetes</option>
-                                <option value="pain">Pain Relief</option>
-                            </select>
-                        </div>
-                    </div>
-                </aside>
-
-                <!-- Right Column -->
-                <section class="right-column">
-                    <div class="section">
-                        <h2 class="section-header">ASK A QUESTION</h2>
-
-                        <div class="form-group">
-                            <label for="question-input">Your Question</label>
-                            <textarea
-                                id="question-input"
-                                class="question-input"
-                                placeholder="Example: What are the side effects of Lipitor?"
-                                rows="3"
-                            ></textarea>
-                        </div>
-
-                        <div class="button-group">
-                            <button id="get-answer-btn" class="btn btn-primary">Get Answer</button>
-                            <button id="clear-btn" class="btn btn-secondary">Clear</button>
-                        </div>
-
-                        <div class="common-questions-section">
-                            <p class="common-questions-label">Common Questions (click to use):</p>
-                            <div class="common-questions-grid">
-                                <button class="chip-btn" data-question="What is this medication used for?">
-                                    What is this medication used for?
-                                </button>
-                                <button class="chip-btn" data-question="How should I take this medication?">
-                                    How should I take this medication?
-                                </button>
-                                <button class="chip-btn" data-question="What are the side effects?">
-                                    What are the side effects?
-                                </button>
-                                <button class="chip-btn" data-question="What drugs interact with this?">
-                                    What drugs interact with this?
-                                </button>
-                                <button class="chip-btn" data-question="Can I take this during pregnancy?">
-                                    Can I take this during pregnancy?
-                                </button>
-                                <button class="chip-btn" data-question="When should I avoid this medication?">
-                                    When should I avoid this medication?
-                                </button>
-                            </div>
-                        </div>
-
-                        <hr class="divider divider-full">
-
-                        <div class="answer-section">
-                            <label class="answer-label">Answer</label>
-                            <div id="answer-box" class="answer-box">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <!-- Footer -->
-            <footer class="footer">
-                © 2026 Sanjitha Rajesh · Built with <span class="footer-highlight">FastAPI</span>
-            </footer>
+    <!-- SECTION 1: Landing -->
+    <section id="section-landing" class="section-landing">
+        <div class="landing-inner">
+            <span class="pill-badge">FDA-Indexed · RAG-Powered · Hallucination-Controlled</span>
+            <h1 class="landing-title">MediQuery</h1>
+            <p class="landing-subtitle">
+                Accurate drug information from 100+ FDA-approved labels.<br>
+                Powered by hybrid retrieval and Llama 3, built to eliminate<br>
+                hallucination in medical AI.
+            </p>
+            <button id="btn-get-started" class="btn btn-primary btn-large">Get Started →</button>
+            <p class="landing-disclaimer">Built on FDA drug labels · Not a substitute for medical advice</p>
         </div>
-    </div>
+    </section>
+
+    <!-- SECTION 2: Personal Info -->
+    <section id="section-personal" class="section-personal" style="display:none">
+        <div class="personal-card">
+            <div class="personal-header">
+                <h2>Tell us about yourself</h2>
+                <p class="personal-subtext">This helps personalize your drug information</p>
+            </div>
+
+            <div class="form-group">
+                <label for="age-group">Age Group</label>
+                <select id="age-group" class="dropdown">
+                    <option value="">Select</option>
+                    <option value="child">Child (under 12)</option>
+                    <option value="teen">Teen (13-17)</option>
+                    <option value="adult">Adult (18-64)</option>
+                    <option value="senior">Senior (65+)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" class="dropdown">
+                    <option value="">Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="conditions">Pre-existing Conditions</label>
+                <select id="conditions" class="dropdown">
+                    <option value="">Select</option>
+                    <option value="none">None</option>
+                    <option value="kidney">Kidney disease</option>
+                    <option value="liver">Liver disease</option>
+                    <option value="heart">Heart disease</option>
+                    <option value="diabetes">Diabetes</option>
+                    <option value="hypertension">High blood pressure</option>
+                    <option value="multiple">Multiple conditions</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="medications">Current Medications</label>
+                <select id="medications" class="dropdown">
+                    <option value="">Select</option>
+                    <option value="none">No medications</option>
+                    <option value="1-2">1-2 medications</option>
+                    <option value="3-5">3-5 medications</option>
+                    <option value="6+">6+ medications</option>
+                    <option value="prefer-not">Prefer not to say</option>
+                </select>
+            </div>
+
+            <button id="btn-continue" class="btn btn-primary btn-full">Continue →</button>
+            <div class="skip-wrap">
+                <a href="#" id="btn-skip" class="skip-link">Skip for now →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: App -->
+    <section id="section-app" class="section-app" style="display:none">
+        <nav class="app-nav">
+            <span class="nav-logo">MediQuery</span>
+            <span class="nav-right">FDA Drug Label Index</span>
+        </nav>
+
+        <div class="app-layout">
+            <!-- Left Sidebar -->
+            <aside class="sidebar-card">
+                <div class="sidebar-profile-header">
+                    <h3 class="sidebar-title">Your Profile</h3>
+                    <button id="btn-edit-profile" class="edit-btn" title="Edit profile">✎</button>
+                </div>
+
+                <div class="profile-field">
+                    <span class="profile-label">Age Group</span>
+                    <span id="profile-age" class="profile-value">Not specified</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-label">Gender</span>
+                    <span id="profile-gender" class="profile-value">Not specified</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-label">Conditions</span>
+                    <span id="profile-conditions" class="profile-value">Not specified</span>
+                </div>
+                <div class="profile-field">
+                    <span class="profile-label">Medications</span>
+                    <span id="profile-medications" class="profile-value">Not specified</span>
+                </div>
+
+                <hr class="sidebar-divider">
+
+                <h4 class="sidebar-section-label">Supported Medications</h4>
+                <div class="med-pills">
+                    <span class="med-pill">Adderall</span>
+                    <span class="med-pill">Accutane</span>
+                    <span class="med-pill">Lipitor</span>
+                    <span class="med-pill">Ibuprofen</span>
+                    <span class="med-pill">Metformin</span>
+                    <span class="med-pill">Prozac</span>
+                    <span class="med-pill">Lisinopril</span>
+                    <span class="med-pill">Tretinoin</span>
+                    <span class="med-pill">Ritalin</span>
+                </div>
+            </aside>
+
+            <!-- Right Main Card -->
+            <main class="main-card">
+                <h2 class="card-header">Ask a Question</h2>
+
+                <div class="form-group">
+                    <textarea
+                        id="question-input"
+                        class="question-input"
+                        placeholder="e.g. What are the side effects of Lipitor?"
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="button-row">
+                    <button id="get-answer-btn" class="btn btn-primary">Get Answer</button>
+                    <button id="clear-btn" class="btn btn-secondary">Clear</button>
+                </div>
+
+                <div class="chips-section">
+                    <p class="chips-label">Common Questions</p>
+                    <div class="chips-grid">
+                        <button class="chip-btn" data-question="What is this medication used for?">What is this medication used for?</button>
+                        <button class="chip-btn" data-question="How should I take this medication?">How should I take this medication?</button>
+                        <button class="chip-btn" data-question="What are the side effects?">What are the side effects?</button>
+                        <button class="chip-btn" data-question="What drugs interact with this?">What drugs interact with this?</button>
+                        <button class="chip-btn" data-question="Can I take this during pregnancy?">Can I take this during pregnancy?</button>
+                        <button class="chip-btn" data-question="When should I avoid this medication?">When should I avoid this medication?</button>
+                    </div>
+                </div>
+
+                <hr class="card-divider">
+
+                <div class="answer-section">
+                    <label class="answer-label">Answer</label>
+                    <div id="answer-box" class="answer-box">
+                        <span class="answer-placeholder">Your answer will appear here...</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
 
     <script src="/static/app.js"></script>
 </body>

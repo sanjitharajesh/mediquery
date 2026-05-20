@@ -16,6 +16,7 @@ CRITICAL INSTRUCTIONS:
 6. For indications: Include all therapeutic uses and conditions mentioned
 7. If asking about specific medical terms (lactic acidosis, angioedema, etc.), use those exact terms if present
 8. Be comprehensive - do not summarize, extract everything relevant
+9. Be concise and direct. Limit your response to 200 words maximum. Prioritize the most clinically important information. Use bullet points only when listing 3 or more items.
 
 EXAMPLES:
 

@@ -33,6 +33,10 @@ class QuestionRequest(BaseModel):
 class AnswerResponse(BaseModel):
     answer: str
 
+class EvalAnswerResponse(BaseModel):
+    answer: str
+    retrieved_contexts: list[str]
+
 # API endpoints
 @app.post("/ask", response_model=AnswerResponse)
 async def ask_question(request: QuestionRequest):
@@ -60,6 +64,25 @@ async def ask_question(request: QuestionRequest):
     except Exception as e:
         print(f"Error processing question: {e}")
         raise HTTPException(status_code=500, detail=f"Error processing question: {str(e)}")
+
+@app.post("/eval-ask", response_model=EvalAnswerResponse)
+async def eval_ask_question(request: QuestionRequest):
+    """
+    Evaluation-only endpoint that returns the raw answer plus retrieved contexts.
+    """
+    if not request.question or not request.question.strip():
+        raise HTTPException(status_code=400, detail="Question cannot be empty")
+
+    try:
+        answer = chain.invoke(request.question.strip(), verbose=False)
+        return EvalAnswerResponse(
+            answer=answer,
+            retrieved_contexts=chain._last_contexts,
+        )
+
+    except Exception as e:
+        print(f"Error processing eval question: {e}")
+        raise HTTPException(status_code=500, detail=f"Error processing eval question: {str(e)}")
 
 @app.get("/health")
 async def health_check():
