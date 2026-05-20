@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from backend.rag.chain import get_rag_chain
+from rag.chain import get_rag_chain
 
 # Initialize FastAPI app
 app = FastAPI(title="MediQuery API", version="1.0.0")

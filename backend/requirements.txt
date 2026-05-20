@@ -1,23 +1,20 @@
-fastapi
-uvicorn[standard]
-langchain
-langchain-community
-langchain-text-splitters
-chromadb
-sentence-transformers   # for Instructor / other HF embeddings
-pydantic
-python-dotenv
-rank-bm25               # for BM25 in week 1 days 3–4
-pandas
-requests
-streamlit               # for UI
-gradio                  # for Gradio UI
-langchain-huggingface   # for HuggingFace embeddings
-pypdf                   # for PDF processing
-pinecone
-langchain-pinecone
-groq                        # Groq SDK (direct client used in llm.py)
-langchain-groq              # Groq LangChain integration (RAGAS judge LLM)
-langfuse                    # tracing + score posting
-ragas                       # RAG evaluation metrics
-datasets                    # HuggingFace datasets (RAGAS Dataset wrapper)
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+langchain==0.3.7
+langchain-community==0.3.7
+langchain-text-splitters==0.3.2
+langchain-huggingface==0.1.2
+langchain-groq==0.2.1
+langchain-pinecone==0.0.1
+sentence-transformers==3.1.1
+python-dotenv==1.0.1
+rank-bm25==0.2.2
+pandas==2.2.3
+requests==2.32.3
+pypdf==4.3.1
+pinecone==5.3.1
+groq==0.11.0
+langfuse==2.53.3
+opentelemetry-sdk==1.27.0
+opentelemetry-api==1.27.0
+pydantic==2.10.6
