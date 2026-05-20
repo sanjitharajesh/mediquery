@@ -45,3 +45,10 @@ queries, a known RAG architecture limitation documented as future work.
 - Cross-encoder re-ranking layer between retrieval and generation
 - Full FDA label index (currently 17 drugs, scales to thousands)
 - Streaming responses to eliminate perceived latency
+
+## Setup
+```bash
+pip install -r backend/requirements.txt
+cp .env.example .env
+PYTHONPATH=backend uvicorn backend.api:app --reload --port 8000
+```

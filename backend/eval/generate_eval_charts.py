@@ -7,7 +7,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 
-REPORTS_DIR = Path(__file__).resolve().parent / "evaluation_reports"
+REPORTS_DIR = Path(__file__).resolve().parent.parent.parent / "evaluation_reports"
 OUTPUT_PATH = REPORTS_DIR / "eval_charts.png"
 
 # (latency_s, coverage_pct, difficulty, passed, label)
