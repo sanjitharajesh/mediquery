@@ -554,27 +554,38 @@ def _collect_sections(root_elem, parent_code: Optional[str] = None) -> List[Dict
     return collected
 
 
-def parse_spl_xml(xml_str: str) -> Tuple[List[Dict], str, List[str]]:
+def parse_spl_xml(xml_str: str) -> Tuple[List[Dict], str, List[str], str]:
     """
     Parse a DailyMed SPL XML string.
 
     Returns:
-        sections   — list of {section_key, section_title, text}
-        drug_name  — extracted generic name (best-effort)
-        brand_names — list of brand name strings found in the label
+        sections           — list of {section_key, section_title, text}
+        drug_name          — extracted generic name (best-effort)
+        brand_names        — list of brand name strings found in the label
+        label_version_date — ISO date string YYYY-MM-DD from <effectiveTime>, or ""
     """
     try:
         root = ET.fromstring(xml_str)
     except ET.ParseError as exc:
         log.error("  XML parse error: %s", exc)
-        return [], "", []
+        return [], "", [], ""
+
+    # Extract label version date from top-level <effectiveTime value="YYYYMMDD"/>
+    label_version_date = ""
+    for eff in root.iter(_t("effectiveTime")):
+        val = eff.get("value", "")
+        if re.match(r"^\d{8}$", val):
+            label_version_date = f"{val[:4]}-{val[4:6]}-{val[6:]}"
+            break
+        if re.match(r"^\d{4}-\d{2}-\d{2}$", val):
+            label_version_date = val
+            break
 
     # Extract drug / brand names from the SPL header
     generic_name = ""
     brand_names: List[str] = []
 
     for name_elem in root.iter(_t("name")):
-        parent = name_elem  # we can't easily get parent in stdlib ET
         val = (name_elem.text or "").strip()
         if val:
             brand_names.append(val)
@@ -589,7 +600,7 @@ def parse_spl_xml(xml_str: str) -> Tuple[List[Dict], str, List[str]]:
     brand_names = list(dict.fromkeys(b for b in brand_names if b))  # dedupe, keep order
 
     sections = _collect_sections(root)
-    return sections, generic_name, brand_names
+    return sections, generic_name, brand_names, label_version_date
 
 
 # ============================================================================
@@ -611,11 +622,12 @@ def build_chunks(
     brand_names: List[str],
     source_url: str,
     splitter: RecursiveCharacterTextSplitter,
+    label_version_date: str = "",
 ) -> List[Dict]:
     """
     Chunk each section and return a list of vector-ready dicts:
       {id, text, drug_name, brand_names, section, section_title, chunk_index,
-       total_chunks_in_section, source_url}
+       total_chunks_in_section, source_url, label_version_date}
     """
     chunks: List[Dict] = []
     drug_norm = re.sub(r"[^a-z0-9]", "", drug_name.lower())
@@ -638,18 +650,32 @@ def build_chunks(
                 "id": vec_id,
                 "text": chunk_text.strip(),
                 "metadata": {
-                    "drug_name":     drug_name.lower(),
-                    "brand_names":   ", ".join(brand_names[:5]),  # Pinecone metadata is string
-                    "section":       sec["section_key"],
-                    "section_title": sec["section_title"][:200],
-                    "chunk_index":   idx,
-                    "total_chunks":  total,
-                    "source_url":    source_url,
-                    "text":          chunk_text.strip()[:1000],  # stored for retrieval
+                    "drug_name":          drug_name.lower(),
+                    "brand_names":        ", ".join(brand_names[:5]),
+                    "section":            sec["section_key"],
+                    "section_title":      sec["section_title"][:200],
+                    "chunk_index":        idx,
+                    "total_chunks":       total,
+                    "source_url":         source_url,
+                    "label_version_date": label_version_date,
+                    "text":               chunk_text.strip()[:1000],
                 },
             })
 
     return chunks
+
+
+def _update_corpus_drugs_json(drug_name: str) -> None:
+    """Append drug_name (lowercase) to data/corpus_drugs.json, creating it if needed."""
+    corpus_path = Path(CHUNKS_PATH).parent / "corpus_drugs.json"
+    try:
+        existing: List[str] = json.loads(corpus_path.read_text()) if corpus_path.exists() else []
+        entry = drug_name.lower()
+        if entry not in existing:
+            existing.append(entry)
+            corpus_path.write_text(json.dumps(sorted(existing), indent=2))
+    except Exception as exc:
+        log.warning("  Could not update corpus_drugs.json: %s", exc)
 
 
 # ============================================================================
@@ -773,7 +799,7 @@ def run(target_drugs: List[str], dry_run: bool = False) -> None:
             continue
 
         # 3. Parse XML
-        sections, extracted_name, brand_names = parse_spl_xml(xml_str)
+        sections, extracted_name, brand_names, label_version_date = parse_spl_xml(xml_str)
         if not sections:
             reason = "XML parsed but no keepable sections found"
             log.warning("  ❌  %s — %s", drug, reason)
@@ -782,12 +808,15 @@ def run(target_drugs: List[str], dry_run: bool = False) -> None:
 
         section_summary = ", ".join(s["section_key"] for s in sections)
         log.info(
-            "  Parsed %d sections: %s",
+            "  Parsed %d sections: %s  [version: %s]",
             len(sections), section_summary[:100],
+            label_version_date or "unknown",
         )
 
         # 4. Chunk
-        chunks = build_chunks(sections, drug, brand_names, source_url, splitter)
+        chunks = build_chunks(
+            sections, drug, brand_names, source_url, splitter, label_version_date
+        )
         log.info("  %d chunks from %d sections", len(chunks), len(sections))
 
         if not chunks:
@@ -801,6 +830,7 @@ def run(target_drugs: List[str], dry_run: bool = False) -> None:
             n = upsert_chunks(chunks, index, embeddings)
             log.info("  ✅  Upserted %d vectors to Pinecone", n)
             succeeded.append(drug)
+            _update_corpus_drugs_json(drug)
         except Exception as exc:
             reason = f"Pinecone upsert failed: {exc}"
             log.error("  ❌  %s — %s", drug, reason)
